@@ -1,11 +1,41 @@
+/*
+ *
+ *   MIT License
+ *
+ *   Copyright (c) 2017 Sidhin S Thomas
+ *
+ *   Permission is hereby granted, free of charge, to any person obtaining a copy
+ *   of this software and associated documentation files (the "Software"), to deal
+ *   in the Software without restriction, including without limitation the rights
+ *   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ *   copies of the Software, and to permit persons to whom the Software is
+ *   furnished to do so, subject to the following conditions:
+ *
+ *   The above copyright notice and this permission notice shall be included in all
+ *   copies or substantial portions of the Software.
+ *
+ *   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ *   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ *   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ *   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ *   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ *   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ *   SOFTWARE.
+ */
+
 #include <stdio.h>
 #include <SDL2/SDL.h>
+
+#include "Circle.h"
 
 #define WINDOW_HEIGHT 480
 #define WINDOW_WIDTH 640
 #define BOX_PADDING 10
+#define PONG_PADDING 10
 #define PONG_HEIGHT 10
 #define PONG_WIDTH 60
+#define BALL_RADIUS 5
+
 
 const int BOX_X = BOX_PADDING;
 const int BOX_Y = BOX_PADDING;
@@ -51,9 +81,12 @@ void renderTexture(SDL_Texture *tex, SDL_Renderer *ren, int x, int y){
 }
 
 void drawStage(SDL_Renderer *renderer, Pong player1, Pong player2, Ball ball){
+    SDL_RenderClear(renderer);
     SDL_RenderFillRect(renderer, &BOX);
     SDL_RenderFillRect(renderer, &player1);
     SDL_RenderFillRect(renderer, &player2);
+    SDL_Point centre = {ball.x,ball.y};
+    drawFilledCircle(renderer, centre, BALL_RADIUS);
 }
 int main() {
     if(SDL_Init(SDL_INIT_VIDEO)!= 0){
@@ -73,13 +106,12 @@ int main() {
         SDL_Quit();
         return 2;
     }
-
-    SDL_Surface *screen = SDL_CreateRGBSurface(0,WINDOW_WIDTH,WINDOW_HEIGHT,32,0,0,0,0);
-    if(screen == NULL){
-        SDL_DestroyWindow(win);
-        SDL_Quit();
-    }
-
+    SDL_SetRenderDrawColor(ren,0,0,0,1);
+    Pong player1 = {WINDOW_WIDTH/2 - PONG_WIDTH, BOX_PADDING+PONG_PADDING, PONG_WIDTH,PONG_HEIGHT};
+    Pong player2 = {WINDOW_WIDTH/2 - PONG_WIDTH, WINDOW_HEIGHT - BOX_PADDING - PONG_PADDING, PONG_WIDTH, PONG_HEIGHT};
+    Ball ball = {WINDOW_HEIGHT/2, WINDOW_WIDTH/2, 0,0};
+    //drawStage(ren,player1,player2,ball);
+    SDL_Delay(10000);
 
     return 0;
 }
