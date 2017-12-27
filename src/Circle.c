@@ -25,28 +25,33 @@
 
 #include "Circle.h"
 
-static void plotCirclePoints(SDL_Renderer *renderer, int x, int y, int cx, int cy){
-    SDL_Point points[8] = {{x+cx,y+cy},{y+cx,x+cy},{-x+cx,y+cy}, {-y+cx,x+cy},
-                           {-x+cx,-y+cy},{-y+cx,-x+cy},{x+cx,-y+cy},{y+cx,-x+cy}};
-    SDL_RenderDrawPoints(renderer,points,8);
+static void plotCirclePoints(SDL_Renderer *renderer, int cx, int cy, int x, int y){
+    SDL_RenderDrawPoint(renderer,cx + x, cy + y);
+    SDL_RenderDrawPoint(renderer,cx + y, cy + x);
+    SDL_RenderDrawPoint(renderer,cx - x, cy + y);
+    SDL_RenderDrawPoint(renderer,cx - y, cy + x);
+    SDL_RenderDrawPoint(renderer,cx - x, cy - y);
+    SDL_RenderDrawPoint(renderer,cx - y, cy - x);
+    SDL_RenderDrawPoint(renderer,cx + x, cy - y);
+    SDL_RenderDrawPoint(renderer,cx + y, cy - x);
+
 }
 
 void drawCircle(SDL_Renderer *renderer, SDL_Point centre, int radius){
     int x = radius;
     int y = 0;
-    int p = 1 - radius;
+    int P = 3 - 2 * radius;
 
-    plotCirclePoints(renderer, centre.x, centre.y, x, y);
-    while (x > y){
-        y++;
-        if(p<=0){
-            p = p + 2*y + 1;
-        }
-        else {
-            x--;
-            p = p - 2*x + 2*y + 1;
-        }
+    while (x >= y){
         plotCirclePoints(renderer,centre.x,centre.y,x,y);
+        y++;
+        if (P <= 0)
+            P = P + 2*y + 1;
+        else
+        {
+            x--;
+            P = P + 2*y - 2*x + 1;
+        }
     }
 }
 

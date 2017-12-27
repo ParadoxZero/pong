@@ -82,35 +82,37 @@ void renderTexture(SDL_Texture *tex, SDL_Renderer *ren, int x, int y){
 
 void drawStage(SDL_Renderer *renderer, Pong player1, Pong player2, Ball ball){
     SDL_RenderClear(renderer);
-    SDL_RenderFillRect(renderer, &BOX);
+    SDL_SetRenderDrawColor(renderer,255,0,0,255);
+    SDL_RenderDrawRect(renderer, &BOX);
     SDL_RenderFillRect(renderer, &player1);
     SDL_RenderFillRect(renderer, &player2);
     SDL_Point centre = {ball.x,ball.y};
     drawFilledCircle(renderer, centre, BALL_RADIUS);
+    SDL_SetRenderDrawColor(renderer,0,0,0,255);
+    SDL_RenderPresent(renderer);
 }
 int main() {
     if(SDL_Init(SDL_INIT_VIDEO)!= 0){
         fprintf(stderr,"Error Initializing Graphics");
         return 1;
     }
-    SDL_Window *win = SDL_CreateWindow("Pong",100,100,WINDOW_HEIGHT,WINDOW_WIDTH,SDL_WINDOW_SHOWN);
+    SDL_Window *win = SDL_CreateWindow("Pong",100,100,WINDOW_WIDTH,WINDOW_HEIGHT,SDL_WINDOW_SHOWN);
     if (win == NULL){
         fprintf(stderr,"Cannot create window: %s", SDL_GetError());
         SDL_Quit();
         return 2;
     }
-    SDL_Renderer *ren = SDL_CreateRenderer(win, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+    SDL_Renderer *ren = SDL_CreateRenderer(win, -1, SDL_RENDERER_ACCELERATED );
     if(ren == NULL){
         SDL_DestroyWindow(win);
         errorLog(stderr,"Cannot create renderer");
         SDL_Quit();
         return 2;
     }
-    SDL_SetRenderDrawColor(ren,0,0,0,1);
     Pong player1 = {WINDOW_WIDTH/2 - PONG_WIDTH, BOX_PADDING+PONG_PADDING, PONG_WIDTH,PONG_HEIGHT};
-    Pong player2 = {WINDOW_WIDTH/2 - PONG_WIDTH, WINDOW_HEIGHT - BOX_PADDING - PONG_PADDING, PONG_WIDTH, PONG_HEIGHT};
+    Pong player2 = {WINDOW_WIDTH/2 - PONG_WIDTH, WINDOW_HEIGHT - BOX_PADDING - PONG_PADDING - PONG_HEIGHT, PONG_WIDTH, PONG_HEIGHT};
     Ball ball = {WINDOW_HEIGHT/2, WINDOW_WIDTH/2, 0,0};
-    //drawStage(ren,player1,player2,ball);
+    drawStage(ren,player1,player2,ball);
     SDL_Delay(10000);
 
     return 0;
